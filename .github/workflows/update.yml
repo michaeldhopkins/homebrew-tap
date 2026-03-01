@@ -29,7 +29,10 @@ jobs:
           '
 
       - name: Audit formula
-        run: brew audit --strict Formula/branchdiff.rb
+        run: |
+          brew update
+          brew tap michaeldhopkins/tap "$(pwd)"
+          brew audit --strict branchdiff
 
       - name: Commit and push
         env:
