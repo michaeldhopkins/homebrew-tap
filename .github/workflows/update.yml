@@ -31,7 +31,8 @@ jobs:
       - name: Audit formula
         run: |
           brew update
-          brew tap michaeldhopkins/tap "$(pwd)"
+          brew tap michaeldhopkins/tap
+          cp Formula/branchdiff.rb "$(brew --repo michaeldhopkins/tap)/Formula/branchdiff.rb"
           brew audit --strict branchdiff
 
       - name: Commit and push
