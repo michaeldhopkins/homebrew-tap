@@ -4,6 +4,9 @@ on:
   repository_dispatch:
     types: [update-formula]
 
+permissions:
+  contents: write
+
 jobs:
   update:
     # macOS required for brew audit
