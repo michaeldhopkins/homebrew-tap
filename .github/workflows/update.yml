@@ -11,22 +11,36 @@ jobs:
   update:
     # macOS required for brew audit
     runs-on: macos-latest
+    env:
+      FORMULA: ${{ github.event.client_payload.formula }}
+      REPO: ${{ github.event.client_payload.repo }}
+      VERSION: ${{ github.event.client_payload.version }}
     steps:
       - uses: actions/checkout@v4
 
-      - name: Update formula version and checksum
-        env:
-          VERSION: ${{ github.event.client_payload.version }}
+      - name: Validate payload
         run: |
-          URL="https://github.com/michaeldhopkins/branchdiff/archive/refs/tags/v${VERSION}.tar.gz"
+          if [ -z "$FORMULA" ] || [ -z "$REPO" ] || [ -z "$VERSION" ]; then
+            echo "::error::Missing required payload fields: formula='$FORMULA' repo='$REPO' version='$VERSION'"
+            exit 1
+          fi
+          if [ ! -f "Formula/${FORMULA}.rb" ]; then
+            echo "::error::Formula file Formula/${FORMULA}.rb not found"
+            exit 1
+          fi
+
+      - name: Update formula version and checksum
+        run: |
+          URL="https://github.com/${REPO}/archive/refs/tags/v${VERSION}.tar.gz"
           SHA256=$(curl -sL "$URL" | shasum -a 256 | awk '{print $1}')
 
-          URL="$URL" SHA256="$SHA256" ruby -e '
+          FORMULA="$FORMULA" URL="$URL" SHA256="$SHA256" ruby -e '
+            formula = ENV["FORMULA"]
             url = ENV["URL"]
             sha = ENV["SHA256"]
-            path = "Formula/branchdiff.rb"
+            path = "Formula/#{formula}.rb"
             content = File.read(path)
-            content.sub!(/url "https:\/\/github\.com\/michaeldhopkins\/branchdiff\/archive\/refs\/tags\/v[^"]*\.tar\.gz"/, "url \"#{url}\"")
+            content.sub!(/url "https:\/\/github\.com\/[^"]*\.tar\.gz"/, "url \"#{url}\"")
             content.sub!(/sha256 "[^"]*"/, "sha256 \"#{sha}\"")
             File.write(path, content)
           '
@@ -35,16 +49,14 @@ jobs:
         run: |
           brew update
           brew tap michaeldhopkins/tap
-          cp Formula/branchdiff.rb "$(brew --repo michaeldhopkins/tap)/Formula/branchdiff.rb"
-          brew audit --strict branchdiff
+          cp "Formula/${FORMULA}.rb" "$(brew --repo michaeldhopkins/tap)/Formula/${FORMULA}.rb"
+          brew audit --strict "$FORMULA"
 
       - name: Commit and push
-        env:
-          VERSION: ${{ github.event.client_payload.version }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add Formula/branchdiff.rb
+          git add "Formula/${FORMULA}.rb"
           git diff --cached --quiet && echo "No changes" && exit 0
-          git commit -m "Update branchdiff to v${VERSION}"
+          git commit -m "Update ${FORMULA} to v${VERSION}"
           git push
