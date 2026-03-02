@@ -17,50 +17,66 @@ class SafeChains < Formula
     bash_completion.install buildpath/"dist-assets/completions/safe-chains.bash" => "safe-chains"
     zsh_completion.install buildpath/"dist-assets/completions/_safe-chains"
     fish_completion.install buildpath/"dist-assets/completions/safe-chains.fish"
+    (share/"safe-chains").install "opencode-plugin.js"
   end
 
   def post_install
     require "json"
 
-    claude_dir = Pathname.new(Dir.home)/".claude"
-    settings_path = claude_dir/"settings.json"
+    configured = []
     binary_path = "#{opt_bin}/safe-chains"
+
+    claude_dir = Pathname.new(Dir.home)/".claude"
+    configure_claude_code(claude_dir, binary_path, configured) if claude_dir.exist?
+
+    opencode_available = which("opencode")
+
+    configured.each { |msg| ohai msg }
+
+    if opencode_available
+      ohai "OpenCode detected — copy the plugin to each project:"
+      puts "  cp #{share}/safe-chains/opencode-plugin.js .opencode/plugins/"
+    end
+
+    if configured.empty? && !opencode_available
+      ohai "safe-chains installed. Configure it for your agentic tool:"
+      puts "  Claude Code: #{homepage}#claude-code"
+      puts "  OpenCode:    cp #{share}/safe-chains/opencode-plugin.js .opencode/plugins/"
+    end
+
+    opoo "safe-chains will check every Bash command before your agentic tool runs it"
+  end
+
+  def configure_claude_code(claude_dir, binary_path, configured)
+    settings_path = claude_dir/"settings.json"
 
     hook_entry = {
       "matcher" => "Bash",
-      "hooks"   => [{
-        "type"    => "command",
+      "hooks" => [{
+        "type" => "command",
         "command" => binary_path,
       }],
     }
 
     if settings_path.exist?
       settings = JSON.parse(settings_path.read)
-
       pre_tool_use = settings.dig("hooks", "PreToolUse") || []
-      already_installed = pre_tool_use.any? do |h|
-        h["hooks"]&.any? { |inner| inner["command"]&.include?("safe-chains") }
-      end
-      if already_installed
-        ohai "safe-chains hook already configured in ~/.claude/settings.json"
-        opoo "safe-chains will check every Bash command before Claude Code runs it"
+      if pre_tool_use.any? { |h| h["hooks"]&.any? { |inner| inner["command"]&.include?("safe-chains") } }
+        configured << "safe-chains hook already configured in ~/.claude/settings.json"
         return
       end
-
       settings["hooks"] ||= {}
       settings["hooks"]["PreToolUse"] ||= []
       settings["hooks"]["PreToolUse"] << hook_entry
     else
-      claude_dir.mkpath
       settings = { "hooks" => { "PreToolUse" => [hook_entry] } }
     end
 
     settings_path.write(JSON.pretty_generate(settings) + "\n")
-    ohai "safe-chains hook added to ~/.claude/settings.json"
-    opoo "safe-chains will check every Bash command before Claude Code runs it"
+    configured << "safe-chains hook added to ~/.claude/settings.json"
   rescue JSON::ParserError
     opoo "Could not parse ~/.claude/settings.json; skipping hook installation."
-    opoo "See: #{homepage}#claude-code-hook"
+    opoo "See: #{homepage}#claude-code"
   end
 
   test do

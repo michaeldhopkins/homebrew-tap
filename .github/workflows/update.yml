@@ -45,6 +45,9 @@ jobs:
             File.write(path, content)
           '
 
+      - name: Run post_install tests
+        run: ruby test_post_install.rb
+
       - name: Audit formula
         run: |
           brew update
