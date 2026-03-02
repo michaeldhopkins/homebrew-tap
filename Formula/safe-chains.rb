@@ -28,8 +28,8 @@ class SafeChains < Formula
 
     hook_entry = {
       "matcher" => "Bash",
-      "hooks" => [{
-        "type" => "command",
+      "hooks"   => [{
+        "type"    => "command",
         "command" => binary_path,
       }],
     }
@@ -38,9 +38,9 @@ class SafeChains < Formula
       settings = JSON.parse(settings_path.read)
 
       pre_tool_use = settings.dig("hooks", "PreToolUse") || []
-      already_installed = pre_tool_use.any? { |h|
-        h.dig("hooks")&.any? { |inner| inner["command"]&.include?("safe-chains") }
-      }
+      already_installed = pre_tool_use.any? do |h|
+        h["hooks"]&.any? { |inner| inner["command"]&.include?("safe-chains") }
+      end
       return if already_installed
 
       settings["hooks"] ||= {}
