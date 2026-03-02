@@ -14,3 +14,17 @@ jobs:
 
       - name: Run post_install tests
         run: ruby test_post_install.rb
+
+  audit:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Audit formulae
+        run: |
+          brew tap michaeldhopkins/tap
+          for formula in Formula/*.rb; do
+            name=$(basename "$formula" .rb)
+            cp "$formula" "$(brew --repo michaeldhopkins/tap)/Formula/$name.rb"
+            brew audit --strict "$name"
+          done
