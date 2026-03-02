@@ -41,7 +41,11 @@ class SafeChains < Formula
       already_installed = pre_tool_use.any? do |h|
         h["hooks"]&.any? { |inner| inner["command"]&.include?("safe-chains") }
       end
-      return if already_installed
+      if already_installed
+        ohai "safe-chains hook already configured in ~/.claude/settings.json"
+        opoo "safe-chains will check every Bash command before Claude Code runs it"
+        return
+      end
 
       settings["hooks"] ||= {}
       settings["hooks"]["PreToolUse"] ||= []
@@ -52,21 +56,11 @@ class SafeChains < Formula
     end
 
     settings_path.write(JSON.pretty_generate(settings) + "\n")
+    ohai "safe-chains hook added to ~/.claude/settings.json"
+    opoo "safe-chains will check every Bash command before Claude Code runs it"
   rescue JSON::ParserError
     opoo "Could not parse ~/.claude/settings.json; skipping hook installation."
     opoo "See: #{homepage}#claude-code-hook"
-  end
-
-  def caveats
-    <<~EOS
-      A PreToolUse hook has been added to ~/.claude/settings.json
-      so Claude Code will automatically use safe-chains.
-
-      To verify:
-        cat ~/.claude/settings.json
-
-      The hook references: #{opt_bin}/safe-chains
-    EOS
   end
 
   test do
