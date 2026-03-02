@@ -70,8 +70,8 @@ class PostInstallHarness
 
     hook_entry = {
       "matcher" => "Bash",
-      "hooks" => [{
-        "type" => "command",
+      "hooks"   => [{
+        "type"    => "command",
         "command" => binary_path,
       }],
     }

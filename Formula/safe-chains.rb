@@ -17,7 +17,7 @@ class SafeChains < Formula
     bash_completion.install buildpath/"dist-assets/completions/safe-chains.bash" => "safe-chains"
     zsh_completion.install buildpath/"dist-assets/completions/_safe-chains"
     fish_completion.install buildpath/"dist-assets/completions/safe-chains.fish"
-    (share/"safe-chains").install "opencode-plugin.js"
+    pkgshare.install "opencode-plugin.js"
   end
 
   def post_install
@@ -35,13 +35,13 @@ class SafeChains < Formula
 
     if opencode_available
       ohai "OpenCode detected — copy the plugin to each project:"
-      puts "  cp #{share}/safe-chains/opencode-plugin.js .opencode/plugins/"
+      puts "  cp #{pkgshare}/opencode-plugin.js .opencode/plugins/"
     end
 
     if configured.empty? && !opencode_available
       ohai "safe-chains installed. Configure it for your agentic tool:"
       puts "  Claude Code: #{homepage}#claude-code"
-      puts "  OpenCode:    cp #{share}/safe-chains/opencode-plugin.js .opencode/plugins/"
+      puts "  OpenCode:    cp #{pkgshare}/opencode-plugin.js .opencode/plugins/"
     end
 
     opoo "safe-chains will check every Bash command before your agentic tool runs it"
@@ -52,8 +52,8 @@ class SafeChains < Formula
 
     hook_entry = {
       "matcher" => "Bash",
-      "hooks" => [{
-        "type" => "command",
+      "hooks"   => [{
+        "type"    => "command",
         "command" => binary_path,
       }],
     }
