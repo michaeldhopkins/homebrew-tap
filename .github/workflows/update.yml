@@ -16,7 +16,7 @@ jobs:
       REPO: ${{ github.event.client_payload.repo }}
       VERSION: ${{ github.event.client_payload.version }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Validate payload
         run: |
