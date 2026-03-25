@@ -21,7 +21,7 @@ class SafeChains < Formula
   end
 
   def post_install
-    ohai "Run 'safe-chains setup' to configure the Claude Code hook"
+    ohai "Run 'safe-chains --setup' to configure the Claude Code hook"
     if which("opencode")
       ohai "OpenCode detected — copy the plugin to each project:"
       puts "  cp #{pkgshare}/opencode-plugin.js .opencode/plugins/"
@@ -31,7 +31,7 @@ class SafeChains < Formula
   def caveats
     <<~EOS
       To configure the Claude Code hook:
-        safe-chains setup
+        safe-chains --setup
 
       To configure OpenCode, copy the plugin to each project:
         cp #{pkgshare}/opencode-plugin.js .opencode/plugins/
