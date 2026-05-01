@@ -1,8 +1,8 @@
 class Jjpr < Formula
   desc "Multi-forge stacked pull requests for Jujutsu"
   homepage "https://github.com/michaeldhopkins/jjpr"
-  url "https://github.com/michaeldhopkins/jjpr/archive/refs/tags/v0.19.0.tar.gz"
-  sha256 "bd45c847211dcb573bcc50530ba545d72b95b628fb9bae23fd5b82cedf29a4bd"
+  url "https://github.com/michaeldhopkins/jjpr/archive/refs/tags/v0.20.0.tar.gz"
+  sha256 "eeb551af34a7e2c95a791aae3950fdcdaa27c85585355dba6234b925b824a4b4"
   license any_of: ["MIT", "Apache-2.0"]
   head "https://github.com/michaeldhopkins/jjpr.git", branch: "main"
 
