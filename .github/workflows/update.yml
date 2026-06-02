@@ -16,7 +16,11 @@ jobs:
       REPO: ${{ github.event.client_payload.repo }}
       VERSION: ${{ github.event.client_payload.version }}
     steps:
+      # Check out the live branch tip, not the (possibly stale) dispatch
+      # commit, so reruns start from current main.
       - uses: actions/checkout@v5
+        with:
+          ref: main
 
       - name: Validate payload
         run: |
@@ -62,4 +66,21 @@ jobs:
           git add "Formula/${FORMULA}.rb"
           git diff --cached --quiet && echo "No changes" && exit 0
           git commit -m "Update ${FORMULA} to v${VERSION}"
-          git push
+          # This tap is shared by many formulae, each pushed by its own
+          # repository_dispatch run. A bare push races: whoever pushes second
+          # gets rejected (non-fast-forward) and, on rerun, keeps failing
+          # because checkout is pinned to the stale dispatch commit. Rebase
+          # onto the latest main and retry. Concurrent runs touch different
+          # formula files, so the rebase never conflicts.
+          for attempt in $(seq 1 5); do
+            if git push origin HEAD:main; then
+              echo "pushed on attempt $attempt"
+              exit 0
+            fi
+            echo "push rejected; rebasing onto latest main (attempt $attempt)"
+            git fetch origin main
+            git rebase origin/main
+            sleep $((RANDOM % 5 + 1))
+          done
+          echo "::error::failed to push ${FORMULA} after 5 attempts"
+          exit 1
