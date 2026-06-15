@@ -5,8 +5,7 @@ Homebrew formulae for michaeldhopkins projects.
 ## Install
 
 ```bash
-brew tap michaeldhopkins/tap
-brew install <formula>
+brew install michaeldhopkins/tap/<formula>
 ```
 
 ## Formulae

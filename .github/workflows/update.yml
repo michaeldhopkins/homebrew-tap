@@ -56,6 +56,9 @@ jobs:
         run: |
           brew update
           brew tap michaeldhopkins/tap
+          # Homebrew 6.0 refuses to load formulae from untrusted third-party
+          # taps; trust ours so `brew audit` can load it.
+          brew trust michaeldhopkins/tap
           cp "Formula/${FORMULA}.rb" "$(brew --repo michaeldhopkins/tap)/Formula/${FORMULA}.rb"
           brew audit --strict "$FORMULA"
 
