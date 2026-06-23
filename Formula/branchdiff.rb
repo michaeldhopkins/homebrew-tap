@@ -1,8 +1,8 @@
 class Branchdiff < Formula
   desc "Terminal UI showing unified diff of current branch vs its base"
   homepage "https://github.com/michaeldhopkins/branchdiff"
-  url "https://github.com/michaeldhopkins/branchdiff/archive/refs/tags/v0.70.1.tar.gz"
-  sha256 "09b85a409a56a7c8f8cc4a3978a3f92bc69f39a2343fcf4bc924f2f0daead13d"
+  url "https://github.com/michaeldhopkins/branchdiff/archive/refs/tags/v0.70.2.tar.gz"
+  sha256 "d61baaae10d3060cbaef663f5234f23043aa3f7283914931ee63332529bb0b7a"
   license any_of: ["MIT", "Apache-2.0"]
   head "https://github.com/michaeldhopkins/branchdiff.git", branch: "main"
 
