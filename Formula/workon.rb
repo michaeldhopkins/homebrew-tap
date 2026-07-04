@@ -1,8 +1,8 @@
 class Workon < Formula
   desc "Development workspace launcher with Zellij, Claude CLI, and branchdiff"
   homepage "https://github.com/michaeldhopkins/workon"
-  url "https://github.com/michaeldhopkins/workon/archive/refs/tags/v0.21.1.tar.gz"
-  sha256 "f92be703c0c2d240fda31567c338f6eece61a254471b28d145f559c174559f52"
+  url "https://github.com/michaeldhopkins/workon/archive/refs/tags/v0.22.0.tar.gz"
+  sha256 "89f63d236f7887dddb864751c253294c2688061f24274d5666578eee2a507a46"
   license any_of: ["MIT", "Apache-2.0"]
   head "https://github.com/michaeldhopkins/workon.git", branch: "main"
 
