@@ -23,6 +23,12 @@ jobs:
       - name: Audit formulae
         run: |
           brew tap michaeldhopkins/tap
+          # Homebrew 6.0 refuses to load formulae from untrusted third-party taps;
+          # trust ours so `brew audit` can load it. update.yml got this in June and
+          # this workflow did not — and CI has not run since, so the gap surfaced on
+          # the next push and then failed on the FIRST formula alphabetically,
+          # nowhere near the formula actually being changed.
+          brew trust michaeldhopkins/tap
           for formula in Formula/*.rb; do
             name=$(basename "$formula" .rb)
             cp "$formula" "$(brew --repo michaeldhopkins/tap)/Formula/$name.rb"
