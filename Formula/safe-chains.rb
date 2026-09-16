@@ -20,13 +20,14 @@ class SafeChains < Formula
     pkgshare.install "opencode-plugin.js"
   end
 
-  def post_install
-    ohai "Run 'safe-chains --setup' to configure the Claude Code hook"
-    if which("opencode")
-      ohai "OpenCode detected — copy the plugin to each project:"
-      puts "  cp #{pkgshare}/opencode-plugin.js .opencode/plugins/"
-    end
-  end
+  # No `post_install`. Homebrew now audits it away in favour of `post_install_steps`, which is a
+  # DECLARATIVE file-prep DSL (chmod/chown/mkdir, serialisable to the JSON API) — it cannot express
+  # what this block did, which was `ohai` two messages and branch on `which("opencode")`.
+  #
+  # It did not need to. Every line of it duplicated `caveats` below: run `--setup`, and copy the
+  # plugin into `.opencode/plugins/`. `caveats` is where Homebrew puts advice for the person who
+  # just installed, it prints on install and on `brew info`, and it does not need a shell-out to
+  # decide whether OpenCode is worth mentioning. So the block is gone rather than translated.
 
   def caveats
     <<~EOS
