@@ -1,8 +1,8 @@
 class Specdiff < Formula
   desc "Show test outline changes on a branch"
   homepage "https://github.com/michaeldhopkins/specdiff"
-  url "https://github.com/michaeldhopkins/specdiff/archive/refs/tags/v0.21.3.tar.gz"
-  sha256 "6a1beb364c3ed55724c8a43a6e903dafe63a323c2060d0abe9100d7bce9a4e26"
+  url "https://github.com/michaeldhopkins/specdiff/archive/refs/tags/v0.21.4.tar.gz"
+  sha256 "f047de583b4de848368cfc1ff69bba93847af7a13ed66e7b76e481ed0dbf4e10"
   license any_of: ["MIT", "Apache-2.0"]
   head "https://github.com/michaeldhopkins/specdiff.git", branch: "main"
 
