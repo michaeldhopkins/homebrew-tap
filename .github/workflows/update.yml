@@ -18,7 +18,7 @@ jobs:
     steps:
       # Check out the live branch tip, not the (possibly stale) dispatch
       # commit, so reruns start from current main.
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with:
           ref: main
 
