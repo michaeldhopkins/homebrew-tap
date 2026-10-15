@@ -1,8 +1,8 @@
 class SafeChains < Formula
   desc "Auto-allow safe, read-only bash commands in agentic coding tools"
   homepage "https://github.com/michaeldhopkins/safe-chains"
-  url "https://github.com/michaeldhopkins/safe-chains/archive/refs/tags/v0.237.1.tar.gz"
-  sha256 "4c708a8e64cc343048b60291cbe2cd43999ada65048a71286edf5b18be2e7d6f"
+  url "https://github.com/michaeldhopkins/safe-chains/archive/refs/tags/v0.238.1.tar.gz"
+  sha256 "766c84045ae15030c88a07226f8a98b534e7d9cbf6c7a86f261ce6d821008f17"
   license any_of: ["MIT", "Apache-2.0"]
   head "https://github.com/michaeldhopkins/safe-chains.git", branch: "main"
 
